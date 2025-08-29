@@ -1,0 +1,85 @@
+general:
+  seed: 42 # Set this for reproducibility
+  debug: "false" # This tests the flow of the pipeline. Set to false to run the whole experiment
+
+
+
+dataset:
+
+  # is_train_dev_test: "train" # Choose between train dev or test set
+  # dataset_name: "spider" # Choose between spider or bird dataset
+  # dataset_path: "../../data/spider/train_merged.json" # Dataset with schema linking
+  # tables_path: "../../data/spider/tables.json" # Structures of tables
+  # db_sqlite: '../../data/spider/database/' # SQLlite databases
+
+  # is_train_dev_test: "dev" # Choose between train dev or test set
+  # dataset_name: "spider" # Choose between spider or bird dataset
+  # dataset_path: "../../data/spider/dev_merged.json" # Dataset with schema linking
+  # tables_path: "../../data/spider/tables.json" # Structures of tables
+  # db_sqlite: '../../data/spider/database/' # SQLlite databases
+  # ground_truth_path: '../../data/spider/dev_gold.sql' # Ground truth SQL queries for evaluation
+
+  # is_train_dev_test: "test" # Choose between train dev or test set
+  # dataset_name: "spider" # Choose between spider or bird dataset
+  # dataset_path: "../../data/spider/test_merged.json" # Dataset with schema linking
+  # tables_path: "../../data/spider/test_tables.json" # Structures of tables
+  # db_sqlite: '../../data/spider/test_database/' # SQLlite databases
+  # ground_truth_path: '../../data/spider/test_gold.sql' # Ground truth SQL queries for evaluation
+
+  # is_train_dev_test: "train" # Choose between train dev or test set
+  # dataset_name: "bird" # Choose between spider or bird dataset
+  # dataset_path: "../../data/bird/train/train_merged.json" # Dataset with schema linking
+  # tables_path: "../../data/bird/train/train_tables.json" # Structures of tables
+  # db_sqlite: '../../data/bird/train/train_databases/' # SQLlite databases
+
+  is_train_dev_test: "dev" # Choose between train dev or test set
+  dataset_name: "bird" # Choose between spider or bird dataset
+  dataset_path: "../../data/bird/dev_20240627/dev_merged.json" # Dataset with schema linking
+  tables_path: "../../data/bird/dev_20240627/dev_tables.json" # Structures of tables
+  db_sqlite: '../../data/bird/dev_20240627/dev_databases/' # SQLlite databases
+  ground_truth_path: '../../data/bird/dev_20240627/' # Ground truth SQL queries for evaluation
+
+
+
+inference:
+  model_name: "seeklhy/OmniSQL-7B"
+  path_model_pretrained: "../../../../hf_cache/Omni7B" # LLM used for making predictions
+  max_tokens: 2048 # Maximun number of tokens the LLM is allowed to generate
+
+  temperature: 0.8
+  test_time_strategy: "majority_voting" # Only for ORM strategies
+  n: N # Number of predictions
+  num_samples_per_batch: 32 # Each batch contains this number of samples
+  n_decreasing: False # If True, the number of samples per batch decreases with each iteration
+  n_step: 1 # Number of steps to decrease the number of samples per batch
+
+  start_query: 0
+  offset_start_query: 1534 # There is start and offset because for multinode inference, you can parallelize inference by writing multiple recipes with different starts and offsets
+  timeout_sql: 30 # Timeout set for evaluating queries 
+  limited_rows: "none" # Number of rows extracted when executing a query
+
+
+orm:
+  orm_prompt:  "Question: {QUESTION}\nSQL: {SQL}\nIs the SQL correct?" # Prompt used to ask the LLM if the SQL is correct
+  max_new_tokens: 10 # Maximum number of tokens the LLM is allowed to generate when checking the SQL
+  use_logits: True   # If True, the LLM will return logits for the generated tokens
+  dataset_train_version: "v1" # Version of the training dataset
+  dataset_test_version: "v1" # Version of the test dataset
+  finetuning_version: "v1" # Version of the finetuning script to use
+  orm_or_prm: "orm" # Which model you're finetuning?
+  base_model_name: "seeklhy/OmniSQL-7B" # Base model name
+  version_model_finetuned: 1 # Used to name the new finetuned model
+  resume_from_checkpoint: False # If there's a previous finetuning checkpoint, resume from the latest one
+  finetuning_iterations: 1 # Number of finetuning iterations
+  r: 16 # LoRA rank of the low-rank update
+  lora_alpha: 64 # How much the LoRa update affects original weights
+  target_modules: ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"] # Transformers modules affected by LoRA finetuning
+  lora_dropout: 0.05 # Prevents overfitting
+  bias: "none" # Bias terms are not finetuned
+  fp16: True # Half precision floating point
+  learning_rate: 7e-5
+  per_device_train_batch_size: 5
+  num_train_epochs: 50
+  upload_at_end: "true" # Upload LoRa weights in HF repositories
+  hf_username: "enter_your_HF_username"
+  hf_token: "enter_your_HF_token" # For uploading models

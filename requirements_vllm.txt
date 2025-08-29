@@ -1,0 +1,9 @@
+torch
+transformers
+datasets
+peft
+accelerate
+func_timeout
+numpy
+rapidfuzz
+vllm
