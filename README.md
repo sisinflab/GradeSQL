@@ -5,7 +5,22 @@
 This toolkit enables researchers and practitioners to:
 - Run **test-time scaling** with candidate SQL queries.  
 - Build a synthetic dataset and train an **ORM-based ranker** in one step. 
-- Reproduce experiments from the paper on benchmarks such as Spider and BIRD.
+- Reproduce experiments from the paper on benchmarks such as Spider and BIRD. 
+
+If you use **GradeSQL** in your research, please cite the following paper:  
+
+```bibtex
+@misc{gradesqloutcomerewardmodels2025,
+      title={GradeSQL: Outcome Reward Models for Ranking SQL Queries from Large Language Models}, 
+      author={Mattia Tritto and Giuseppe Farano and Dario Di Palma and Gaetano Rossiello and Fedelucio Narducci and Dharmashankar Subramanian and Tommaso Di Noia},
+      year={2025},
+      eprint={2509.01308},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2509.01308}, 
+}
+```
+
 
 ## Prerequisites
 
